@@ -2,36 +2,42 @@ class Book:
     def __init__(self, title, author):
         self.title = title
         self.author = author
-        self.available = True
+        self._is_checked_out = False
+
+    def check_out(self):
+        self._is_checked_out = True
+
+    def return_book(self):
+        self._is_checked_out = False
+
+    def is_available(self):
+        return not self._is_checked_out
+
+    def __str__(self):
+        return f"{self.title} by {self.author}"
+
 
 class Library:
     def __init__(self):
-        self.books = []
-        self.current_book = None  # Track the currently checked out book
-    
-    def add_book(self, title, author):
-        book = Book(title, author)
-        self.books.append(book)
-    
-    def check_out(self, title):
-        for book in self.books:
-            if book.title == title and book.available:
-                book.available = False
-                self.current_book = book  # Store the current book
-                return True
-        return False
-    
-    def return_book(self):
-        if self.current_book and not self.current_book.available:
-            self.current_book.available = True
-            returned_title = self.current_book.title
-            self.current_book = None
-            return True
-        return False
-    
+        self._books = []
+
+    def add_book(self, book):
+        self._books.append(book)
+
+    def check_out_book(self, title):
+        for book in self._books:
+            if book.title == title and book.is_available():
+                book.check_out()
+                break
+
+    def return_book(self, title):
+        for book in self._books:
+            if book.title == title and not book.is_available():
+                book.return_book()
+                break
+
     def list_available_books(self):
-        available_books = []
-        for book in self.books:
-            if book.available:
-                available_books.append(book.title)
-        return available_books
+        for book in self._books:
+            if book.is_available():
+                print(book)
+
