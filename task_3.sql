@@ -1,3 +1,4 @@
+"USE alx_book_store;"
 import mysql.connector
 from mysql.connector import Error
 
